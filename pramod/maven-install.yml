@@ -1,0 +1,72 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: Install Java
+    shell: yum install java-1.8.0-openjdk -y
+  
+  - name: Install Java devel
+    shell: yum install java-1.8.0-openjdk-devel -y
+
+  - name: create file maven.sh file
+    file: 
+       path=/etc/profile.d/maven.sh
+       state=touch
+
+  - name: set jave envirment veriable path using lineinfile module
+    lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk'
+
+  - name: set jre path
+    lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export JRE_HOME=/usr/lib/jvm/jre'
+
+  - name: Create directory
+    file: 
+        path=/opt/pramod/maven
+        state=directory
+  - name: Download Maven
+    get_url: url=https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+     dest=/opt/pramod/apache-maven-3.6.3-bin.tar.gz
+
+    register: find_output1
+
+  - debug:
+      var: find_output1
+  - name: extract the apache-maven-3.6.3-bin.tar.gz
+    unarchive:
+      src=/opt/pramod/apache-maven-3.6.3-bin.tar.gz
+      dest=/opt/pramod/
+      remote_src=yes
+
+    register: find_output
+
+  -  debug:
+      var: find_output
+
+  - name: move apache-maven-3.6.3
+    command: mv /opt/pramod/apache-maven-3.6.3 /opt/pramod/maven/
+    
+    register: find_output2
+
+  - debug:
+      var: find_output2
+
+  - lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export M2_HOME=/opt/pramod/maven'
+  - lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export PATH=${M2_HOME}/bin:${PATH}'
+
+  - name: Source profile
+    shell: source /etc/profile
+    
+    register: find_output4
+
+  - debug:
+      var: find_output4
+
+

@@ -1,0 +1,10 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: create user 
+      user:
+         name=pramod1
+         password=pramod1
+         group=ansible
+         shell=/bin/bash

@@ -1,0 +1,16 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: create multiple directory with item
+      file:
+       path={{item}} 
+       state=absent
+       group=ansible
+       owner=ansible
+       mode=700
+      with_items:
+        - '/home/ansible/pramod111'
+        - '/home/ansible/pramod222'
+        - '/home/ansible/pramod333'
+        - '/home/ansible/pramod444'     

@@ -1,0 +1,30 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: Install Java
+    command: yum install java-1.8.0-openjdk -y
+    command: yum install java-1.8.0-openjdk-devel -y
+  - name: Setup Environment variables
+    copy:
+      content: "export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \n"
+      dest: "/etc/profile.d/maven.sh"
+  - lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export JRE_HOME=/usr/lib/jvm/jre'
+  - name: Create directory
+    file: path=/opt/sankar state=directory
+  - name: Download Maven
+    get_url: url=https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz dest=/opt/sankar/apache-maven-3.6.3-bin.tar.gz
+  - name: Extract Maven
+    command: tar xvf /opt/sankar/apache-maven-3.6.3-bin.tar.gz -C /opt/sankar
+  - name: Move to a smaller directory
+    command: mv /opt/sankar/apache-maven-3.6.3 /opt/sankar/maven
+  - lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export M2_HOME=/opt/sankar/maven'
+  - lineinfile:
+      path: /etc/profile.d/maven.sh
+      line: 'export PATH=${M2_HOME}/bin:${PATH}'
+  - name: Source profile
+    shell: source /etc/profile

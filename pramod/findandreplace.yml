@@ -1,0 +1,9 @@
+---
+- hosts: webservers 
+  become: yes
+  tasks:
+    - name: find word and replce it 
+      replace: 
+        path=/home/ansible/passwd
+        regexp=shutdown
+        replace=breckdonw
