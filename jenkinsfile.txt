@@ -1,0 +1,25 @@
+pipeline 
+{
+agent any (on which machine you want to deply)
+
+options { buildDiscarder(logRotator(numToKeepStr: '5')) }    
+
+tools {maven 'apache-maven-3.0.1'} 
+
+parameters {}
+
+stages {
+    stage ('code checkout') { 
+	    steps { 
+		 checkout([$class: 'GitSCM', branches: [[name: '*/Devops']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/pramod-devops/git-repo22.git']]]) 
+		}
+	} 	
+	stage ('Build') { 
+	    steps { 
+		 sh 'clean package cobertura:cobertura -Dcobertura.report.format=xml'
+		}
+	} 
+	
+	      
+	}
+}	
