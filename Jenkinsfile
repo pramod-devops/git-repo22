@@ -5,9 +5,9 @@ pipeline {
         maven "Maven"
           }
 
-      stages {
-        stage('Code checkout') {
-            steps {
+        stages {
+            stage('Code checkout') {
+               steps {
                 // Get some code from a GitHub repository
                 git branch: 'Devops', url: 'https://github.com/pramod-devops/git-repo22.git'
 
@@ -39,14 +39,14 @@ pipeline {
             }
         }
       }
-	 stage('Deploy War') {
-      steps {
+	    stage('Deploy War') {
+             steps {
         sh label: '', script: 'ansible-playbook deploy.yml'
             }
            		   }
 	
-     post {
-        success {
+        post {
+             success {
             mail to:"pramodborse121@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
         }
         failure {
