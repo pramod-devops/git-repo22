@@ -42,7 +42,7 @@ stage('Deploy War') {
             }
           }
 	
- post {
+post {
         success {
            mail to:"pramodborse121@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
         }
