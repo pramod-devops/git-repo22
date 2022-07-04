@@ -6,7 +6,7 @@ pipeline {
 stages {
    stage('Code checkout') {
             steps {
-                git branch: 'Devops', url: 'https://github.com/pramod-devops/git-repo22.git'
+               
 stage('Build') {
        steps {
                sh 'mvn -Dmaven.test.failure.ignore=true install'
