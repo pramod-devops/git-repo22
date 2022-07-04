@@ -12,7 +12,6 @@ stage('Build') {
                sh 'mvn -Dmaven.test.failure.ignore=true install'
             }
 }
-
 stage('Results') {
        steps {
          junit '**/target/surefire-reports/*.xml'
@@ -41,7 +40,6 @@ stage('Deploy War') {
       sh label: '', script: 'ansible-playbook deploy.yml'
             }
           }
-	
 post {
         success {
            mail to:"pramodborse121@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
