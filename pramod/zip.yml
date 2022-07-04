@@ -1,0 +1,9 @@
+---
+- hosts: webservers
+  become:
+  tasks: 
+     - name: make zip file
+       archive: 
+        path: /home/ansible/pramod1
+        dest: /home/ansible/pramod1.zip
+        format: zip  

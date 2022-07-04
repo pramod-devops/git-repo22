@@ -1,0 +1,19 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: create direcotory
+      file: 
+        path=/home/ansible/pramod123
+        state=absent
+        group=ansible
+        mode=700
+        owner=ansible
+    - name: create direcotory
+      file:
+        path=/home/ansible/pramod1234
+        state=absent
+        group=ansible
+        mode=700
+        owner=ansible
+        

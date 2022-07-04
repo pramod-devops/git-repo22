@@ -1,0 +1,8 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: Create a file
+    file: 
+       path=/home/ansible/sankar.txt 
+       state=touch

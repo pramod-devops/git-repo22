@@ -1,0 +1,11 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: delete user 
+      user:
+         name=pramod1
+         password=pramod1
+         state=absent
+         remove=yes
+         force=yes

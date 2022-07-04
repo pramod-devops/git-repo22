@@ -1,0 +1,9 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+     - name: create unzip 
+       unarchive:
+        src: /home/ansible/pramod1.zip
+        dest: /home/ansible/
+        remote_src: yes 
