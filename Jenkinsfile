@@ -1,11 +1,11 @@
 pipeline {
-agent any
-tools {
+      agent any
+       tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven"
-    }
+          }
 
-    stages {
+      stages {
         stage('Code checkout') {
             steps {
                 // Get some code from a GitHub repository
