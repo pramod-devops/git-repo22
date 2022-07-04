@@ -1,51 +1,76 @@
 pipeline {
-      agent any
-       tools {
-          maven "Maven"
-       }
-stages {
-   stage('Code checkout') {
-            steps {
-               git branch: 'Devops', url: 'https://github.com/pramod-devops/git-repo22.git'
-stage('Build') {
-       steps {
-               sh 'mvn -Dmaven.test.failure.ignore=true install'
-            }
-}
-stage('Results') {
-       steps {
-         junit '**/target/surefire-reports/*.xml'
-           archiveArtifacts 'target/*.war'
-           }
-         }
-        }
+    agent any 
+    tools { 
+        maven 'Maven' 
+      
     }
-stage('Sonarqube') {
-        environment {
-        scannerHome = tool 'sonarqube'
-           }
-           steps {
-              withSonarQubeEnv('sonarqube') {
-               sh "${scannerHome}/bin/sonar-scanner"
-        }
-		}
-stage('Artifact upload') {
-        steps {
-            nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/helloworld.war']], mavenCoordinate: [artifactId: 'hello-world-servlet-example', groupId: 'com.geekcap.vmturbo', packaging: 'war', version: '$BUILD_NUMBER']]]
-            }
-        }
+stages { 
+     
+ stage('Preparation') { 
+     steps {
+// for display purposes
+
+      // Get some code from a GitHub repository
+
+      git branch: 'Devops', url: 'https://github.com/pramod-devops/git-repo22.git'
+
+      // Get the Maven tool.
+     
+ // ** NOTE: This 'M3' Maven tool must be configured
+ 
+     // **       in the global configuration.   
+     }
+   }
+
+   stage('Build') {
+       steps {
+       // Run the maven build
+
+      //if (isUnix()) {
+         sh 'mvn -Dmaven.test.failure.ignore=true install'
+      //} 
+      //else {
+      //   bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+       }
+//}
+   }
+ 
+  stage('Results') {
+      steps {
+      junit '**/target/surefire-reports/*.xml'
+      archiveArtifacts 'target/*.war'
       }
-stage('Deploy War') {
-          steps {
-      sh label: '', script: 'ansible-playbook deploy.yml'
-            }
-          }
+ }
+ stage('Sonarqube') {
+    environment {
+        scannerHome = tool 'sonarqube'
+    }
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh "${scannerHome}/bin/sonar-scanner"
+        }
+  //      timeout(time: 10, unit: 'MINUTES') {
+ //           waitForQualityGate abortPipeline: true
+  //      }
+    }
+}
+     stage('Artifact upload') {
+      steps {
+      nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/helloworld.war']], mavenCoordinate: [artifactId: 'hello-world-servlet-example', groupId: 'com.geekcap.vmturbo', packaging: 'war', version: '$BUILD_NUMBER']]]
+         }
+ }
+     stage('Deploy War') {
+      steps {
+        sh label: '', script: 'ansible-playbook deploy.yml'
+      }
+ }
+}
 post {
         success {
-           mail to:"pramodborse121@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
+            mail to:"pramodborse121@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
         }
         failure {
             mail to:"pramodborse121@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
-                 }  
-          }
- }
+        }
+    }       
+}
